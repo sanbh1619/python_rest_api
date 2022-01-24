@@ -14,11 +14,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Disabling flask tracking 
 app.secret_key = 'json'
 api = Api(app)
 
-@app.before_first_request
-def create_tables():
-    db.create_all()     # for creating it goes through imports, in above imports resources are importing models and thats how table will be found and created
-
-
 jwt = JWT(app, authenticate, identity) # creates /auth endpoint
 
 api.add_resource(Item, '/item/<string:name>')
@@ -32,5 +27,9 @@ if __name__ == '__main__':
 
     from db import db
     db.init_app(app)
+
+    @app.before_first_request
+    def create_tables():
+        db.create_all()     # for creating it goes through imports, in above imports resources are importing models and thats how table will be found and created
 
     app.run(port=5000)
